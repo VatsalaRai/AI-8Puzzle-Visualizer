@@ -102,17 +102,6 @@ BFS, DFS, DLS, IDDLS, GBFS and A* are described on the Algorithms page but not i
 
 None. Uniform Cost Search is an uninformed algorithm, so h(n) = 0 and f(n) = g(n). Misplaced Tiles and Manhattan Distance belong to GBFS and A*, so the heuristic and depth limit controls on the Setup page are shown disabled.
 
-## Screenshots
-
-Taken while the page fonts could not load, so headings use a fallback font. With internet access the headings use Press Start 2P and look more pixelated. Replace these with your own screenshots before submitting.
-
-| | |
-| --- | --- |
-| ![Home](docs/screenshots/01-home.png) | ![Setup](docs/screenshots/02-setup.png) |
-| ![Play](docs/screenshots/03-play.png) | ![Answer reveal](docs/screenshots/04-answer-reveal.png) |
-| ![Solver](docs/screenshots/05-solver.png) | ![Compare](docs/screenshots/06-compare.png) |
-| ![Algorithms](docs/screenshots/07-algorithms.png) | ![Mobile](docs/screenshots/08-mobile-play.png) |
-
 ## Project structure
 
 ```
