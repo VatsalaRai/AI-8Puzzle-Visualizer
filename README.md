@@ -14,28 +14,6 @@ Blank Quest is a retro pixel-art web game built around the 8-Puzzle. You play th
 | Course | Artificial Intelligence |
 | Algorithm | Uniform Cost Search  |
 
-
-## GitHub Pages URL
-
-`https://github.com/VatsalaRai/AI-8Puzzle-Visualizer.git`
-
-## Run it in VS Code
-
-1. Open the `AI-8Puzzle-Visualizer` folder in VS Code (File, Open Folder).
-2. Install the **Live Server** extension. VS Code offers it automatically because of `.vscode/extensions.json`.
-3. Right-click `index.html` and choose **Open with Live Server**.
-
-You can also double-click `index.html`, because the site is plain HTML, CSS and JavaScript with no build step. An internet connection is needed the first time, because Tailwind CSS, GSAP, anime.js, canvas-confetti and the Google fonts load from CDNs.
-
-Click anywhere on a page once before you expect sound, because browsers block audio until you interact with the page.
-
-## Publish on GitHub Pages
-
-1. Create a repository named `AI-8Puzzle-Visualizer` on GitHub and push this folder to it.
-2. In the repository open **Settings, Pages**.
-3. Under **Build and deployment** choose **Deploy from a branch**, branch `main`, folder `/ (root)`, then Save.
-4. After a minute the site is live at the URL above. Put that URL in this README.
-
 ## Pages and features
 
 | Page | File | What it has |
