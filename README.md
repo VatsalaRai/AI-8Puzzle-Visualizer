@@ -1,7 +1,7 @@
 # Blank Quest: Interactive 8-Puzzle Problem Solver
 
 Artificial Intelligence Digital Assignment (Case Study)
-5. Uniform Cost Search (UCS)**.
+Uniform Cost Search (UCS)
 
 Blank Quest is a retro pixel-art web game built around the 8-Puzzle. You play the puzzle yourself, hear a different sound for every right and wrong move, and the optimal answer found by Uniform Cost Search is revealed at the end. A separate Solver page replays the search node by node.
 
