@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solver | Blank Quest</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/pixel.css">
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <main class="page">
+    <header class="reveal">
+      <h1 class="title-px">SOLVER</h1>
+      <p class="font-silk text-[15px] mt-3 mb-0 max-w-[780px]">WATCH UNIFORM COST SEARCH THINK. EACH STEP EXPANDS THE CHEAPEST NODE IN THE OPEN LIST.</p>
+    </header>
+
+    <div class="deco-row"></div>
+
+    <section id="sv-error" class="win hidden mb-7" role="alert">
+      <div class="win-bar"><h2 class="win-title m-0">NO SOLUTION</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <p id="sv-error-text" class="mt-0"></p>
+        <a class="btn" href="setup.html">GO TO SETUP</a>
+      </div>
+    </section>
+
+    <div class="grid gap-8 xl:grid-cols-[minmax(0,480px)_minmax(0,1fr)]">
+
+      <!-- Left column: board and controls -->
+      <div class="reveal">
+        <div class="board-wrap"><div id="sv-board"></div></div>
+
+        <div class="mt-6 flex flex-wrap gap-x-3 gap-y-1">
+          <button id="btn-run" class="btn" type="button">RUN</button>
+          <button id="btn-pause" class="btn btn-sun" type="button">PAUSE</button>
+          <button id="btn-resume" class="btn btn-sun" type="button">RESUME</button>
+        </div>
+        <div class="flex flex-wrap gap-x-3 gap-y-1">
+          <button id="btn-back" class="btn btn-lav" type="button">PREVIOUS STEP</button>
+          <button id="btn-step" class="btn btn-lav" type="button">NEXT STEP</button>
+        </div>
+        <div class="flex flex-wrap gap-x-3 gap-y-1">
+          <button id="btn-end" class="btn btn-pink" type="button">RUN TO END</button>
+          <button id="btn-reset" class="btn btn-pink" type="button">RESET</button>
+        </div>
+
+        <div class="panel mt-5 max-w-[480px]">
+          <label class="label block" for="rng-speed">Change speed: <span id="speed-val">7</span> of 10</label>
+          <input id="rng-speed" class="px-range" type="range" min="1" max="10" step="1" value="7">
+          <label class="label block mt-3" for="rng-scrub">Step: <span id="scrub-val">0</span> of <span id="scrub-max">0</span></label>
+          <input id="rng-scrub" class="px-range" type="range" min="0" max="0" step="1" value="0">
+          <label class="label block mt-3 mb-1" for="sel-cost">Path cost model</label>
+          <select id="sel-cost" class="px-select w-full">
+            <option value="uniform">UNIFORM (every move costs 1)</option>
+            <option value="tile">TILE WEIGHTED (tile k costs k)</option>
+          </select>
+        </div>
+
+        <div class="panel panel-pink mt-5 max-w-[480px]">
+          <h2 class="panel-h">INITIAL AND GOAL STATES</h2>
+          <div class="flex flex-wrap gap-x-8 gap-y-4">
+            <div><p class="label mb-2">Initial state</p><div id="sv-init"></div></div>
+            <div><p class="label mb-2">Goal state</p><div id="sv-goal"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: search information -->
+      <div class="grid gap-6 content-start">
+
+        <section class="win reveal" aria-labelledby="live-h">
+          <div class="win-bar"><h2 id="live-h" class="win-title m-0">LIVE SEARCH</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+          <div class="win-body">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div class="stat stat-lime"><div class="stat-k">NODES EXPANDED</div><div id="lv-expanded" class="stat-v">0</div></div>
+              <div class="stat"><div class="stat-k">NODES GENERATED</div><div id="lv-generated" class="stat-v">1</div></div>
+              <div class="stat stat-lav"><div class="stat-k">OPEN LIST SIZE</div><div id="lv-open" class="stat-v">1</div></div>
+              <div class="stat stat-lav"><div class="stat-k">CLOSED LIST SIZE</div><div id="lv-closed" class="stat-v">0</div></div>
+              <div class="stat"><div class="stat-k">CURRENT DEPTH</div><div id="lv-curdepth" class="stat-v">0</div></div>
+              <div class="stat"><div class="stat-k">MAX DEPTH SO FAR</div><div id="lv-depth" class="stat-v">0</div></div>
+              <div class="stat stat-lime"><div class="stat-k">PATH COST g(n)</div><div id="lv-g" class="stat-v">0</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-2">
+          <div class="panel reveal" aria-labelledby="cur-h">
+            <h2 id="cur-h" class="panel-h">CURRENT NODE</h2>
+            <div id="cur-info" class="text-[13px]">Press RUN or STEP to begin. The first node is the initial state with cost 0.</div>
+          </div>
+          <div class="panel panel-lav reveal" aria-labelledby="succ-h">
+            <h2 id="succ-h" class="panel-h">SUCCESSORS GENERATED</h2>
+            <ul id="succ-list" class="rows scroll-y"><li class="muted">Nothing expanded yet.</li></ul>
+          </div>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-2">
+          <div class="panel panel-pink reveal" aria-labelledby="open-h">
+            <h2 id="open-h" class="panel-h">OPEN LIST (CHEAPEST FIRST)</h2>
+            <p class="text-[12px] muted mt-0 mb-2">Showing <span id="open-shown">0</span> of <span id="open-count">1</span> waiting nodes. The top one is expanded next.</p>
+            <ul id="open-list" class="rows scroll-y"></ul>
+          </div>
+          <div class="panel reveal" aria-labelledby="closed-h">
+            <h2 id="closed-h" class="panel-h">CLOSED LIST (RECENT)</h2>
+            <p class="text-[12px] muted mt-0 mb-2"><span id="closed-count">0</span> states fully expanded. Newest first.</p>
+            <ul id="closed-list" class="rows scroll-y"></ul>
+          </div>
+        </section>
+
+        <section class="win reveal" aria-labelledby="sum-h">
+          <div class="win-bar"><h2 id="sum-h" class="win-title m-0">RUN SUMMARY</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+          <div class="win-body">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div class="stat stat-lime"><div class="stat-k">SOLUTION</div><div id="sm-status" class="stat-v">-</div></div>
+              <div class="stat"><div class="stat-k">TOTAL MOVES</div><div id="sm-moves" class="stat-v">-</div></div>
+              <div class="stat"><div class="stat-k">PATH COST</div><div id="sm-cost" class="stat-v">-</div></div>
+              <div class="stat"><div class="stat-k">MAX SEARCH DEPTH</div><div id="sm-depth" class="stat-v">-</div></div>
+              <div class="stat stat-lav"><div class="stat-k">NODES GENERATED</div><div id="sm-total-gen" class="stat-v">-</div></div>
+              <div class="stat stat-lav"><div class="stat-k">NODES EXPANDED</div><div id="sm-total-exp" class="stat-v">-</div></div>
+              <div class="stat stat-lav"><div class="stat-k">EXECUTION TIME</div><div id="sm-time" class="stat-v">-</div></div>
+              <div class="stat stat-lav"><div class="stat-k">MEMORY (APPROX.)</div><div id="sm-mem" class="stat-v">-</div></div>
+            </div>
+            <p class="mt-4 mb-0 text-[13px]">Memory level: <strong id="sm-memlabel" class="text-lav">-</strong>. Peak open list: <strong id="sm-peak">-</strong> nodes.</p>
+            <p class="text-[12px] mt-2 mb-0">The summary fills in when the goal is reached. Time is measured on a separate run with recording switched off. Memory is an estimate from the node count, not a browser measurement.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Final answer (shown when the goal node is selected) -->
+    <section id="sv-solution" class="hidden mt-10" aria-labelledby="sol-h">
+      <div id="sv-banner" class="banner banner-win mb-6">GOAL REACHED</div>
+      <div class="win">
+        <div class="win-bar"><h2 id="sol-h" class="win-title m-0">SOLUTION PATH</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body">
+          <p id="sol-text" class="mt-0 mb-4 text-[14px]"></p>
+          <div class="scroll-x pb-3"><div id="sv-path" class="flex items-end gap-3"></div></div>
+          <ol id="sv-steps" class="rows mt-3"></ol>
+          <div class="mt-5 flex flex-wrap gap-x-3 gap-y-1">
+            <button id="btn-play-path" class="btn" type="button">ANIMATE SOLUTION ON BOARD</button>
+            <a class="btn btn-pink" href="compare.html">COMPARE</a>
+            <a class="btn btn-sun" href="game.html">PLAY THIS PUZZLE</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <section class="grid gap-7 lg:grid-cols-2">
+      <div class="win reveal">
+        <div class="win-bar"><h2 class="win-title m-0">PSEUDOCODE</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body">
+<pre class="code">function UCS(start, goal):
+  open   = min-heap ordered by g(n)
+  open.push(start, g = 0)
+  closed = empty set
+
+  while open is not empty:
+    node = open.pop()          # cheapest g first
+    if node.state in closed: continue
+    if node.state == goal:     # goal test on selection
+      return path(node)
+    closed.add(node.state)
+
+    for each legal move (up, down, left, right):
+      child   = apply(move, node)
+      g_child = g(node) + stepCost(move)
+      if child.state in closed: skip
+      if child.state in open with g <= g_child: skip
+      open.push(child, g_child)   # replaces a costlier copy
+
+  return FAILURE</pre>
+        </div>
+      </div>
+      <div class="win reveal">
+        <div class="win-bar"><h2 class="win-title m-0">READING THE PANELS</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body prose">
+          <ul>
+            <li><strong>Current node:</strong> the node just taken off the open list, with its parent, depth and path cost g(n). UCS has no heuristic, so h(n) = 0 and f(n) = g(n).</li>
+            <li><strong>Successors:</strong> up to four boards made by moving the blank. Each one is added, replaces a costlier copy, or is skipped.</li>
+            <li><strong>Open list:</strong> the frontier. It is a priority queue, so the lowest g is always expanded first.</li>
+            <li><strong>Closed list:</strong> states already expanded. They are never expanded twice.</li>
+            <li><strong>Step slider:</strong> drag to jump to any step of the search and replay it from there.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <section class="panel panel-lav reveal" aria-labelledby="sv-log-h">
+      <h2 id="sv-log-h" class="panel-h">SEARCH LOG</h2>
+      <ul id="sv-log" class="log scroll-y"></ul>
+    </section>
+  </main>
+
+  <div id="scenery-root"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/ucs.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/decor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/solver.js"></script>
+</body>
+</html>

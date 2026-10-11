@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blank Quest | 8-Puzzle with Uniform Cost Search</title>
+  <meta name="description" content="Interactive 8-Puzzle game and Uniform Cost Search visualizer.">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/pixel.css">
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <main class="page">
+
+    <!-- HOME: course, title, student, registration number, introduction -->
+    <section class="grid gap-7 lg:grid-cols-[1.25fr_1fr]">
+      <div class="win reveal">
+        <div class="win-bar"><span class="win-title">HOME.EXE</span><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body">
+          <span class="chip chip-lav">AI Digital Assignment (Case Study) - 10 Marks</span>
+          <h1 id="hero-title" class="title-px mt-5">BLANK QUEST</h1>
+          <p class="font-silk text-[15px] mt-3 tracking-wide">THE 8-PUZZLE GAME POWERED BY UNIFORM COST SEARCH</p>
+
+          <dl class="mt-6 grid gap-3 sm:grid-cols-2">
+            <div class="stat sm:col-span-2">
+              <dt class="stat-k">COURSE NAME</dt>
+              <dd class="stat-v sm m-0" data-cfg="courseName"></dd>
+            </div>
+            <div class="stat sm:col-span-2">
+              <dt class="stat-k">ASSIGNMENT TITLE</dt>
+              <dd class="stat-v sm m-0" data-cfg="assignmentTitle"></dd>
+            </div>
+            <div class="stat">
+              <dt class="stat-k">STUDENT NAME</dt>
+              <dd class="stat-v sm m-0" data-cfg="studentName"></dd>
+            </div>
+            <div class="stat">
+              <dt class="stat-k">REGISTRATION NUMBER</dt>
+              <dd class="stat-v sm m-0" data-cfg="regNo"></dd>
+            </div>
+            <div class="stat stat-lime sm:col-span-2">
+              <dt class="stat-k">ASSIGNED ALGORITHM</dt>
+              <dd class="stat-v sm m-0" data-cfg="algorithm"></dd>
+            </div>
+          </dl>
+
+          <div class="mt-6 flex flex-wrap gap-x-4 gap-y-2">
+            <a class="btn" href="game.html">START QUEST</a>
+            <a class="btn btn-pink" href="setup.html">SET UP A PUZZLE</a>
+            <a class="btn btn-lav" href="solver.html">WATCH THE SOLVER</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="win reveal">
+        <div class="win-bar"><span class="win-title">LIVE DEMO</span><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body">
+          <div class="max-w-[340px]"><div id="demo-board"></div></div>
+          <p class="label mt-4 mb-1">Uniform Cost Search solving the assignment example</p>
+          <p id="demo-caption" class="font-px text-[10px] leading-6 m-0">STEP 0</p>
+          <p class="text-[13px] mt-2 mb-0">Every few seconds the optimal solution found by this project's own search replays here. The blank slides, the tiles follow.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- Introduction to the 8-Puzzle problem -->
+    <section class="grid gap-7 lg:grid-cols-2">
+      <article class="win reveal">
+        <div class="win-bar"><span class="win-title">THE 8-PUZZLE</span><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body prose">
+          <p>The 8-Puzzle is a sliding tile puzzle on a 3 by 3 grid. Eight numbered tiles share the board with one empty space called the blank. A move slides one tile that touches the blank into it. The task is to turn a starting arrangement into a target arrangement using as few moves, or as little cost, as possible.</p>
+          <p>There are 9! = 362,880 possible arrangements, but only half of them, 181,440, can be reached from any one start, because every legal move keeps the parity of the tile inversions unchanged. A blank in a corner has 2 moves, on an edge 3 moves, in the centre 4 moves.</p>
+          <h2 class="head-px mt-4">PROBLEM FORMULATION</h2>
+          <ul>
+            <li><strong>State:</strong> the position of the eight tiles and the blank.</li>
+            <li><strong>Initial state:</strong> any solvable arrangement you choose or generate.</li>
+            <li><strong>Actions:</strong> move the blank up, down, left or right.</li>
+            <li><strong>Goal test:</strong> the board equals the goal arrangement.</li>
+            <li><strong>Path cost:</strong> 1 per move, or the tile number per move (both are supported).</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="win reveal">
+        <div class="win-bar"><span class="win-title">HOW TO PLAY</span><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body prose">
+          <p>Blank Quest turns the puzzle into a game and keeps the search algorithm working behind the scenes.</p>
+          <ul>
+            <li>Pick or generate a puzzle on the <a href="setup.html">Setup</a> page.</li>
+            <li>On the <a href="game.html">Play</a> page, click a tile next to the blank, or use the arrow keys or W A S D to slide the blank.</li>
+            <li>Every move makes a sound. A <strong>right move</strong> is one that lies on a cheapest path to the goal and gets a bright rising chime. A <strong>wrong move</strong> leads you away and gets a low buzz with a message saying so.</li>
+            <li>The shortest answer stays hidden until you solve the puzzle, or give up. Then Uniform Cost Search reveals the optimal solution and compares it with yours.</li>
+            <li>Want to see the algorithm think? The <a href="solver.html">Solver</a> page replays the search node by node.</li>
+          </ul>
+          <h2 class="head-px mt-4">ASSIGNED ALGORITHM</h2>
+          <p>Uniform Cost Search always expands the cheapest unexpanded node first. It is complete and optimal when every step costs more than zero.</p>
+        </div>
+      </article>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- Navigation menu -->
+    <section aria-labelledby="menu-h">
+      <h2 id="menu-h" class="title-md reveal">WORLD MAP</h2>
+      <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        <a class="panel panel-link reveal" href="setup.html">
+          <h3 class="panel-h">SETUP</h3>
+          <p class="text-[13px] m-0">Enter initial and goal states, or generate a random solvable puzzle. Choose the algorithm and cost model.</p>
+        </a>
+        <a class="panel panel-link panel-pink reveal" href="game.html">
+          <h3 class="panel-h">PLAY</h3>
+          <p class="text-[13px] m-0">Solve it yourself with sound effects, right and wrong move feedback, and a revealed answer at the end.</p>
+        </a>
+        <a class="panel panel-link panel-lav reveal" href="solver.html">
+          <h3 class="panel-h">SOLVER</h3>
+          <p class="text-[13px] m-0">Watch Uniform Cost Search step by step with run, pause, step and speed controls and live open and closed lists.</p>
+        </a>
+        <a class="panel panel-link reveal" href="compare.html">
+          <h3 class="panel-h">COMPARE</h3>
+          <p class="text-[13px] m-0">Performance table and chart for the same puzzle, plus your game result against the optimum.</p>
+        </a>
+        <a class="panel panel-link panel-pink reveal" href="algorithms.html">
+          <h3 class="panel-h">ALGORITHMS</h3>
+          <p class="text-[13px] m-0">Description, working principle, pros, limits, complexity, completeness and optimality for each algorithm.</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="scenery-root"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/ucs.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/decor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/home.js"></script>
+</body>
+</html>

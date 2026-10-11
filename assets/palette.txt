@@ -1,0 +1,17 @@
+Blank Quest colour palette (used in css/pixel.css and js/tailwind-config.js)
+
+Background          #050509
+Secondary surface   #0A0A18
+Hot pink            #E85DB5
+Pastel pink         #F2A9D5
+Electric lavender   #6258F5
+Pixel green         #83F28F
+Pale mint           #D0FFC0
+Pixel yellow        #F7E96B
+Soft white          #F5F3FF
+
+Fonts (Google Fonts, loaded in every page):
+  Press Start 2P  - headings, labels, numbers
+  Silkscreen      - supporting text
+Sound effects are synthesised in the browser with the Web Audio API (js/sound.js), so there are no audio files.
+Pixel-art sprites are drawn from character maps in js/sprites.js, so there are no image files.

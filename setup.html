@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Setup | Blank Quest</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/pixel.css">
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <main class="page">
+    <header class="reveal">
+      <h1 class="title-px">SETUP</h1>
+      <p class="font-silk text-[15px] mt-3 mb-0 max-w-[720px]">PICK YOUR PUZZLE, THEN PICK THE SEARCH. EVERYTHING YOU SAVE HERE IS USED BY THE GAME, THE SOLVER AND THE COMPARISON PAGE.</p>
+    </header>
+
+    <div class="deco-row"></div>
+
+    <!-- PUZZLE INPUT -->
+    <section class="grid gap-7 xl:grid-cols-[1.4fr_1fr]" aria-labelledby="input-h">
+      <div class="win reveal">
+        <div class="win-bar"><h2 id="input-h" class="win-title m-0">METHOD 1: ENTER STATES</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body">
+          <p class="text-[13px] mt-0">Type digits 1 to 8 once each. Leave one square empty, or type _ or 0, for the blank.</p>
+
+          <div class="flex flex-wrap gap-x-10 gap-y-6 mt-4">
+            <div>
+              <p class="label mb-2">Initial state</p>
+              <div id="grid-init" class="inline-grid grid-cols-3 gap-2"></div>
+            </div>
+            <div>
+              <p class="label mb-2">Goal state</p>
+              <div id="grid-goal" class="inline-grid grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <ul id="val-msg" class="log mt-5" aria-live="polite"></ul>
+
+          <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+            <button id="btn-save" class="btn" type="button">SAVE PUZZLE</button>
+            <button id="btn-example" class="btn btn-lav" type="button">LOAD ASSIGNMENT EXAMPLE</button>
+            <button id="btn-classic" class="btn btn-sun" type="button">CLASSIC GOAL</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="win reveal">
+        <div class="win-bar"><h2 class="win-title m-0">METHOD 2: RANDOM PUZZLE</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <div class="win-body">
+          <p class="text-[13px] mt-0">The generator starts at the goal and makes random legal moves, so the puzzle is always solvable.</p>
+          <label class="label block mt-4 mb-1" for="sel-diff">Difficulty</label>
+          <select id="sel-diff" class="px-select w-full">
+            <option value="easy">EASY (8 scramble moves)</option>
+            <option value="medium">MEDIUM (16 scramble moves)</option>
+            <option value="hard">HARD (26 scramble moves)</option>
+            <option value="brutal">BRUTAL (60 scramble moves)</option>
+          </select>
+          <label class="label block mt-4 mb-1" for="sel-goal">Goal state to use</label>
+          <select id="sel-goal" class="px-select w-full">
+            <option value="keep">KEEP THE GOAL IN METHOD 1</option>
+            <option value="assignment">ASSIGNMENT GOAL (1 2 3 / 8 _ 4 / 7 6 5)</option>
+            <option value="classic">CLASSIC GOAL (1 2 3 / 4 5 6 / 7 8 _)</option>
+          </select>
+          <div class="mt-5">
+            <button id="btn-random" class="btn btn-pink" type="button">GENERATE RANDOM PUZZLE</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- ALGORITHM SELECTION -->
+    <section class="win reveal" aria-labelledby="algo-h">
+      <div class="win-bar"><h2 id="algo-h" class="win-title m-0">ALGORITHM SELECTION</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <p class="text-[13px] mt-0 max-w-[820px]">The course lists seven algorithms and each student implements the one assigned to them. This project implements <strong>Uniform Cost Search (Algorithm 5)</strong>. The others are shown for reference and are locked.</p>
+
+        <div id="algo-list" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <button type="button" class="algo-card locked" data-algo="bfs"><span class="nm">BFS</span><br><span class="text-[12px]">Breadth First Search. Locked.</span></button>
+          <button type="button" class="algo-card locked" data-algo="dfs"><span class="nm">DFS</span><br><span class="text-[12px]">Depth First Search. Locked.</span></button>
+          <button type="button" class="algo-card locked" data-algo="dls"><span class="nm">DLS</span><br><span class="text-[12px]">Depth Limited Search. Locked.</span></button>
+          <button type="button" class="algo-card locked" data-algo="iddls"><span class="nm">IDDLS</span><br><span class="text-[12px]">Iterative Deepening DLS. Locked.</span></button>
+          <button type="button" class="algo-card selected" data-algo="ucs" aria-pressed="true"><span class="nm">UCS (SELECTED)</span><br><span class="text-[12px]">Uniform Cost Search. Expands the cheapest node first. This is the implemented algorithm.</span></button>
+          <button type="button" class="algo-card locked" data-algo="gbfs"><span class="nm">GBFS</span><br><span class="text-[12px]">Greedy Best First Search. Locked.</span></button>
+          <button type="button" class="algo-card locked" data-algo="astar"><span class="nm">A*</span><br><span class="text-[12px]">A* Search. Locked.</span></button>
+        </div>
+
+        <div class="grid gap-6 mt-6 lg:grid-cols-2">
+          <fieldset class="border-0 p-0 m-0">
+            <legend class="label mb-2">Path cost model for UCS</legend>
+            <div class="grid gap-3">
+              <label class="radio-card" id="rc-uniform">
+                <input type="radio" name="cost" value="uniform">
+                <span class="font-px text-[10px] leading-5">UNIFORM</span><br>
+                <span class="text-[12px]">Every move costs 1. UCS then finds the fewest moves.</span>
+              </label>
+              <label class="radio-card" id="rc-tile">
+                <input type="radio" name="cost" value="tile">
+                <span class="font-px text-[10px] leading-5">TILE WEIGHTED</span><br>
+                <span class="text-[12px]">Moving tile k costs k. Heavy tiles are expensive, so the cheapest path is not always the shortest.</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="panel panel-lav">
+            <h3 class="panel-h">OTHER PARAMETERS</h3>
+            <label class="label block mb-1" for="in-depth">Depth limit (DLS only)</label>
+            <input id="in-depth" class="px-select w-full" type="number" min="1" max="50" value="5" disabled aria-describedby="param-note">
+            <label class="label block mt-3 mb-1" for="sel-heur">Heuristic (GBFS and A* only)</label>
+            <select id="sel-heur" class="px-select w-full" disabled aria-describedby="param-note">
+              <option>MISPLACED TILES</option>
+              <option>MANHATTAN DISTANCE</option>
+            </select>
+            <p id="param-note" class="text-[12px] mt-3 mb-0">These two controls belong to DLS, GBFS and A*, which are assigned to other students, so they are disabled. UCS needs neither: it is not depth limited and uses no heuristic (h(n) = 0, f(n) = g(n)).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- CURRENT PUZZLE PREVIEW -->
+    <section class="win reveal" aria-labelledby="prev-h">
+      <div class="win-bar"><h2 id="prev-h" class="win-title m-0">SAVED PUZZLE</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <div class="flex flex-wrap gap-x-10 gap-y-6">
+          <div class="w-[220px]">
+            <p class="label mb-2">Initial state</p>
+            <div id="prev-init" class="board-static"></div>
+          </div>
+          <div class="w-[220px]">
+            <p class="label mb-2">Goal state</p>
+            <div id="prev-goal" class="board-static"></div>
+          </div>
+          <div class="flex-1 min-w-[240px]">
+            <p class="label mb-2">Status</p>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span id="chip-solv" class="chip chip-lime">SOLVABLE</span>
+              <span id="chip-cost" class="chip chip-lav">UNIFORM COST</span>
+            </div>
+            <p id="prev-note" class="text-[13px] mt-0 mb-4"></p>
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
+              <a class="btn" href="game.html">PLAY THIS PUZZLE</a>
+              <a class="btn btn-lav" href="solver.html">WATCH UCS SOLVE IT</a>
+              <a class="btn btn-pink" href="compare.html">COMPARE</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="scenery-root"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/ucs.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/decor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/setup.js"></script>
+</body>
+</html>

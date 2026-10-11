@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Algorithms | Blank Quest</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/pixel.css">
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <main class="page">
+    <header class="reveal">
+      <h1 class="title-px">ALGORITHMS</h1>
+      <p class="font-silk text-[15px] mt-3 mb-0 max-w-[780px]">THE SEVEN SEARCH ALGORITHMS OF THE ASSIGNMENT. UNIFORM COST SEARCH IS THE ONE IMPLEMENTED IN THIS PROJECT.</p>
+    </header>
+
+    <div class="deco-row"></div>
+
+    <section class="grid gap-7 lg:grid-cols-[260px_minmax(0,1fr)]">
+      <div class="reveal">
+        <h2 class="panel-h">CHOOSE AN ALGORITHM</h2>
+        <div id="algo-tabs" role="tablist" aria-label="Search algorithms" aria-orientation="vertical" class="grid gap-3"></div>
+      </div>
+
+      <div id="algo-panel" role="tabpanel" tabindex="0" aria-live="polite" class="grid gap-6 content-start"></div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <section class="win reveal" aria-labelledby="all-h">
+      <div class="win-bar"><h2 id="all-h" class="win-title m-0">AT A GLANCE</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <div class="scroll-x">
+          <table class="px-table">
+            <thead>
+              <tr>
+                <th scope="col">ALGORITHM</th>
+                <th scope="col">TYPE</th>
+                <th scope="col">TIME</th>
+                <th scope="col">SPACE</th>
+                <th scope="col">COMPLETE</th>
+                <th scope="col">OPTIMAL</th>
+              </tr>
+            </thead>
+            <tbody id="glance-body"></tbody>
+          </table>
+        </div>
+        <p class="text-[12px] mt-4 mb-0">b = branching factor (2 to 4 on the 8-Puzzle), d = depth of the shallowest goal, m = maximum depth, l = depth limit, C* = optimal cost, e = smallest step cost.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="scenery-root"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/ucs.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/decor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/algorithms.js"></script>
+</body>
+</html>

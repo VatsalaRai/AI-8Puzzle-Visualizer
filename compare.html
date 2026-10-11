@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compare | Blank Quest</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/pixel.css">
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <main class="page">
+    <header class="reveal">
+      <h1 class="title-px">COMPARE</h1>
+      <p class="font-silk text-[15px] mt-3 mb-0 max-w-[780px]">PERFORMANCE ON THE SAME PUZZLE INSTANCE. THIS PROJECT IMPLEMENTS ONLY UNIFORM COST SEARCH, SO THE OTHER ROWS STAY EMPTY.</p>
+    </header>
+
+    <div class="deco-row"></div>
+
+    <!-- The puzzle being measured -->
+    <section class="win reveal" aria-labelledby="pz-h">
+      <div class="win-bar"><h2 id="pz-h" class="win-title m-0">PUZZLE INSTANCE</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <div class="flex flex-wrap gap-x-10 gap-y-5 items-start">
+          <div><p class="label mb-2">Initial state</p><span id="cmp-init"></span></div>
+          <div><p class="label mb-2">Goal state</p><span id="cmp-goal"></span></div>
+          <div class="flex-1 min-w-[240px]">
+            <p id="cmp-note" class="text-[13px] mt-0 mb-3"></p>
+            <div class="flex flex-wrap gap-x-3 gap-y-1">
+              <button id="btn-rand" class="btn btn-pink" type="button">NEW RANDOM PUZZLE</button>
+              <a class="btn btn-lav" href="setup.html">CHANGE PUZZLE</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- Comparison table -->
+    <section class="win reveal" aria-labelledby="tbl-h">
+      <div class="win-bar"><h2 id="tbl-h" class="win-title m-0">ALGORITHM COMPARISON TABLE</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <div class="scroll-x">
+          <table class="px-table" aria-describedby="tbl-note">
+            <thead>
+              <tr>
+                <th scope="col">ALGORITHM</th>
+                <th scope="col">SOLUTION FOUND</th>
+                <th scope="col">NODES EXPANDED</th>
+                <th scope="col">MOVES</th>
+                <th scope="col">PATH COST</th>
+                <th scope="col">TIME</th>
+                <th scope="col">MEMORY</th>
+              </tr>
+            </thead>
+            <tbody id="cmp-body"></tbody>
+          </table>
+        </div>
+        <p id="tbl-note" class="text-[12px] mt-4 mb-0">Each student implements only the algorithm assigned to them, so BFS, DFS, DLS, IDDLS, GBFS and A* are not part of this project. The two UCS rows use the same puzzle with the two path cost models. Time is measured with recording switched off. Memory is an estimate from the node count.</p>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- Bar charts for the two UCS configurations -->
+    <section class="grid gap-7 lg:grid-cols-2">
+      <div class="panel reveal" aria-labelledby="ch1-h">
+        <h2 id="ch1-h" class="panel-h">NODES EXPANDED ON THIS PUZZLE</h2>
+        <div id="chart-nodes" class="grid gap-3"></div>
+      </div>
+      <div class="panel panel-pink reveal" aria-labelledby="ch2-h">
+        <h2 id="ch2-h" class="panel-h">EXECUTION TIME ON THIS PUZZLE</h2>
+        <div id="chart-time" class="grid gap-3"></div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- Benchmark across difficulties -->
+    <section class="win reveal" aria-labelledby="bm-h">
+      <div class="win-bar"><h2 id="bm-h" class="win-title m-0">UCS BENCHMARK BY DIFFICULTY</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <p class="text-[13px] mt-0 max-w-[820px]">Runs Uniform Cost Search on 5 fixed random puzzles per difficulty, with the same seeds every time, and averages the results. This shows how quickly the search effort grows as the puzzle gets harder.</p>
+        <div class="flex flex-wrap gap-x-3 gap-y-1 items-center">
+          <button id="btn-bench" class="btn" type="button">RUN BENCHMARK</button>
+          <span id="bench-status" class="label" role="status"></span>
+        </div>
+        <div class="scroll-x mt-4">
+          <table class="px-table">
+            <thead>
+              <tr>
+                <th scope="col">DIFFICULTY</th>
+                <th scope="col">COST MODEL</th>
+                <th scope="col">AVG MOVES</th>
+                <th scope="col">AVG PATH COST</th>
+                <th scope="col">AVG NODES EXPANDED</th>
+                <th scope="col">AVG TIME</th>
+              </tr>
+            </thead>
+            <tbody id="bench-body"><tr><td colspan="6" class="muted">Press RUN BENCHMARK to fill this table.</td></tr></tbody>
+          </table>
+        </div>
+        <div id="bench-bars" class="grid gap-3 mt-5"></div>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- Theory table for all algorithms -->
+    <section class="win reveal" aria-labelledby="th-h">
+      <div class="win-bar"><h2 id="th-h" class="win-title m-0">THEORETICAL PROPERTIES OF ALL SEVEN ALGORITHMS</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <div class="scroll-x">
+          <table class="px-table">
+            <thead>
+              <tr>
+                <th scope="col">ALGORITHM</th>
+                <th scope="col">COMPLETE</th>
+                <th scope="col">OPTIMAL</th>
+                <th scope="col">TIME</th>
+                <th scope="col">SPACE</th>
+              </tr>
+            </thead>
+            <tbody id="theory-body"></tbody>
+          </table>
+        </div>
+        <p class="text-[12px] mt-4 mb-0">b = branching factor, d = depth of the shallowest goal, m = maximum depth, l = depth limit, C* = optimal cost, e = smallest step cost. See the <a href="algorithms.html">Algorithms</a> page for details.</p>
+      </div>
+    </section>
+
+    <div class="deco-row"></div>
+
+    <!-- Game result versus optimum -->
+    <section class="win reveal" aria-labelledby="gm-h">
+      <div class="win-bar"><h2 id="gm-h" class="win-title m-0">YOUR LATEST GAME VERSUS THE OPTIMUM</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body" id="game-card"></div>
+    </section>
+  </main>
+
+  <div id="scenery-root"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/ucs.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/decor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/compare.js"></script>
+</body>
+</html>

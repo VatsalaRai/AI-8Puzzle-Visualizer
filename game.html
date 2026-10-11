@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Play | Blank Quest</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/pixel.css">
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <main class="page">
+    <header class="reveal">
+      <h1 class="title-px">PLAY</h1>
+      <p class="font-silk text-[15px] mt-3 mb-0 max-w-[760px]">SLIDE THE TILES UNTIL THE BOARD MATCHES THE TARGET. THE SHORTEST ANSWER STAYS HIDDEN UNTIL THE END.</p>
+    </header>
+
+    <div class="deco-row"></div>
+
+    <!-- Shown instead of the game when the puzzle cannot be played -->
+    <section id="g-error" class="win hidden" role="alert">
+      <div class="win-bar"><h2 class="win-title m-0">CANNOT START</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+      <div class="win-body">
+        <p id="g-error-text" class="mt-0"></p>
+        <a class="btn" href="setup.html">GO TO SETUP</a>
+      </div>
+    </section>
+
+    <section id="game-root" class="grid gap-8 xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)]">
+
+      <!-- Board and controls -->
+      <div class="reveal">
+        <div class="board-wrap">
+          <div id="g-board"></div>
+          <div id="g-overlay" class="overlay" role="dialog" aria-live="polite"></div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-x-3 gap-y-1">
+          <button id="btn-undo" class="btn btn-lav" type="button">UNDO</button>
+          <button id="btn-hint" class="btn btn-sun" type="button">HINT</button>
+          <button id="btn-restart" class="btn" type="button">RESTART</button>
+          <button id="btn-giveup" class="btn btn-pink" type="button">GIVE UP</button>
+        </div>
+        <p class="text-[12px] muted mt-1 mb-0 max-w-[480px]">Click a tile that touches the blank, or press the arrow keys or W A S D to slide the blank. A hint costs score. Giving up reveals the answer.</p>
+
+        <div class="panel panel-lav mt-6 max-w-[480px]">
+          <h2 class="panel-h">NEW QUEST</h2>
+          <label class="label block mb-1" for="g-diff">Difficulty</label>
+          <select id="g-diff" class="px-select w-full">
+            <option value="easy">EASY (8 scramble moves)</option>
+            <option value="medium">MEDIUM (16 scramble moves)</option>
+            <option value="hard">HARD (26 scramble moves)</option>
+            <option value="brutal">BRUTAL (60 scramble moves)</option>
+          </select>
+          <div class="mt-3"><button id="btn-new" class="btn btn-pink" type="button">NEW RANDOM PUZZLE</button></div>
+        </div>
+      </div>
+
+      <!-- Status panels -->
+      <div class="grid gap-6 content-start">
+        <section class="win reveal" aria-labelledby="hud-h">
+          <div class="win-bar"><h2 id="hud-h" class="win-title m-0">QUEST STATUS</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+          <div class="win-body">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div class="stat"><div class="stat-k">MOVES</div><div id="st-moves" class="stat-v">0</div></div>
+              <div class="stat"><div class="stat-k">PATH COST</div><div id="st-cost" class="stat-v">0</div></div>
+              <div class="stat stat-lime"><div class="stat-k">RIGHT</div><div id="st-right" class="stat-v">0</div></div>
+              <div class="stat"><div class="stat-k">WRONG</div><div id="st-wrong" class="stat-v">0</div></div>
+              <div class="stat stat-lav"><div class="stat-k">STREAK</div><div id="st-streak" class="stat-v">0</div></div>
+              <div class="stat stat-lav"><div class="stat-k">HINTS</div><div id="st-hints" class="stat-v">0</div></div>
+              <div class="stat stat-lav"><div class="stat-k">TIME</div><div id="st-time" class="stat-v">00:00</div></div>
+              <div class="stat stat-lime"><div class="stat-k">SCORE</div><div id="st-score" class="stat-v">1000</div></div>
+            </div>
+            <p class="label mt-4 mb-1">Accuracy: <span id="st-acc">0%</span></p>
+            <div class="bar" role="progressbar" aria-label="Accuracy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="acc-wrap"><i id="acc-bar"></i></div>
+          </div>
+        </section>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          <section class="panel reveal" aria-labelledby="tgt-h">
+            <h2 id="tgt-h" class="panel-h">TARGET BOARD</h2>
+            <div id="g-target"></div>
+            <p class="text-[12px] muted mt-3 mb-0">Yellow squares on your board mark tiles that already sit on their target square.</p>
+          </section>
+
+          <section class="panel panel-pink reveal" aria-labelledby="hs-h">
+            <h2 id="hs-h" class="panel-h">HIGH SCORES</h2>
+            <ol id="hs-list" class="rows"></ol>
+          </section>
+        </div>
+
+        <section class="panel panel-lav reveal" aria-labelledby="log-h">
+          <h2 id="log-h" class="panel-h">QUEST LOG</h2>
+          <ul id="g-log" class="log" aria-live="polite"></ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- Answer reveal (hidden until the puzzle is solved or the player gives up) -->
+    <section id="reveal" class="hidden mt-10" aria-labelledby="rv-h">
+      <div id="rv-banner" class="banner banner-win mb-6">ANSWER REVEALED</div>
+
+      <div class="grid gap-7 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div class="win">
+          <div class="win-bar"><h2 id="rv-h" class="win-title m-0">ANSWER.EXE</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+          <div class="win-body">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div class="stat stat-lime"><div class="stat-k">OPTIMAL MOVES</div><div id="rv-opt-moves" class="stat-v">0</div></div>
+              <div class="stat stat-lime"><div class="stat-k">OPTIMAL COST</div><div id="rv-opt-cost" class="stat-v">0</div></div>
+              <div class="stat"><div class="stat-k">YOUR MOVES</div><div id="rv-your-moves" class="stat-v">0</div></div>
+              <div class="stat"><div class="stat-k">COST YOU SPENT</div><div id="rv-your-cost" class="stat-v">0</div></div>
+              <div class="stat stat-lav"><div class="stat-k">RIGHT / WRONG</div><div id="rv-rw" class="stat-v">0 / 0</div></div>
+              <div class="stat stat-lav"><div class="stat-k">TIME</div><div id="rv-time" class="stat-v">00:00</div></div>
+              <div class="stat"><div class="stat-k">GRADE</div><div id="rv-grade" class="stat-v">-</div></div>
+              <div class="stat"><div class="stat-k">FINAL SCORE</div><div id="rv-score" class="stat-v">0</div></div>
+              <div class="stat stat-lav"><div class="stat-k">HINTS / UNDOS</div><div id="rv-hu" class="stat-v">0 / 0</div></div>
+            </div>
+            <p id="rv-verdict" class="mt-4 mb-1 text-[14px]"></p>
+            <p id="rv-ucs" class="text-[12px] mt-0 mb-4"></p>
+
+            <h3 class="head-px mt-2">THE OPTIMAL SOLUTION, STEP BY STEP</h3>
+            <div class="scroll-x pb-3">
+              <div id="rv-path" class="flex items-end gap-3"></div>
+            </div>
+            <ol id="rv-steps" class="rows mt-2"></ol>
+
+            <div class="mt-6 flex flex-wrap gap-x-3 gap-y-1">
+              <button id="rv-again" class="btn" type="button">PLAY THIS PUZZLE AGAIN</button>
+              <button id="rv-new" class="btn btn-pink" type="button">NEW RANDOM PUZZLE</button>
+              <a class="btn btn-lav" href="solver.html">WATCH UCS SEARCH</a>
+              <a class="btn btn-sun" href="compare.html">COMPARE</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-6 content-start">
+          <div class="win">
+            <div class="win-bar"><h2 class="win-title m-0">SOLUTION REPLAY</h2><span class="win-ctl" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="win-body">
+              <div class="max-w-[320px]"><div id="rv-board"></div></div>
+              <p id="rv-cap" class="font-px text-[10px] leading-6 mt-4 mb-2">STEP 0</p>
+              <div class="flex flex-wrap gap-x-3 gap-y-1">
+                <button id="rv-play" class="btn" type="button">PLAY SOLUTION</button>
+                <button id="rv-stop" class="btn btn-pink" type="button">STOP</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-pink">
+            <h3 class="panel-h">YOUR MOVES</h3>
+            <ol id="rv-yours" class="rows scroll-y"></ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="scenery-root"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/ucs.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/decor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/game.js"></script>
+</body>
+</html>
